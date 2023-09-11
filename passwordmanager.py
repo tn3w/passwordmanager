@@ -207,9 +207,9 @@ while True:
             new_pwd_data = {"password": new_password, "username": new_username, "email": new_email, "website": new_website, "description": new_description}
             passwords = [new_pwd_data] + passwords
             save_passwords()
-            start_index = 0
             print("Password saved!")
             input("Enter: ")
+        start_index = 0
     else:
         try:
             int(option)
@@ -233,4 +233,7 @@ while True:
                     print(f"Website: {password['website']}")
                 if not password['description'] is None:
                     print(f"Description: {password['description']}")
-                input("\nEnter: ")
+                option2  = input("\nDelete or Enter: ")
+                if option2.lower() in ["d", "delete", "del"]:
+                    passwords.pop(index)
+                    save_passwords()
