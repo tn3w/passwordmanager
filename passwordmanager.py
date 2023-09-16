@@ -17,6 +17,21 @@ LOGO = """ _____ _ _ _ ____     _____
                                        |___|\n"""
 DEFAULT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "default.conf")
 
+def get_password_strength(password) -> int:
+    strength = (len(password) * 62.5) / 16
+    if strength > 70:
+        strength = 70
+    if re.search(r'[A-Z]', password):
+        strength += 12.5
+    if re.search(r'[a-z]', password):
+        strength += 12.5
+    if re.search(r'[!@#$%^&*()_+{}\[\]:;<>,.?~\\]', password):
+        strength += 12.5
+    if strength > 100:
+        strength = 100
+    return round(strength)
+    
+
 class SymmetricCrypto:
     """
     Implementation of symmetric encryption with AES
@@ -237,6 +252,13 @@ while True:
                     print(f"Website: {password['website']}")
                 if not password['description'] is None:
                     print(f"Description: {password['description']}")
+                password_strength = get_password_strength(password['password'])
+                color = "\033[32m"
+                if password_strength < 85:
+                    color = "\033[33m"
+                if password_strength < 60:
+                    color = "\033[31m"
+                print(f"{color}Password Strength: {password_strength}/100\033[0m")
                 option2  = input("\nDelete or Enter: ")
                 if option2.lower() in ["d", "delete", "del"]:
                     passwords.pop(index)
