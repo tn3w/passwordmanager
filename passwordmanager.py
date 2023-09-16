@@ -183,13 +183,17 @@ while True:
         print("No passwords yet.")
     print(" ")
     option = input('Enter to view more passwords, Numbers to view passwords in detail, or "add" to add a new password: ')
-    if option.lower() == "Q":
+    if option.lower() in ["q", "quit"]:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(LOGO)
         print("Saving Passwords...")
         save_passwords()
         break
     if option == "":
-        if len(passwords) > 15:
+        if len(passwords)-start_index > 15:
             start_index += 15
+        else:
+            start_index = 0
     elif option == "add":
         os.system('cls' if os.name == 'nt' else 'clear')
         print(LOGO)
