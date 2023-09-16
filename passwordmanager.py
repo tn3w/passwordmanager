@@ -30,7 +30,6 @@ def get_password_strength(password) -> int:
     if strength > 100:
         strength = 100
     return round(strength)
-    
 
 class SymmetricCrypto:
     """
