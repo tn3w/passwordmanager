@@ -17,18 +17,27 @@ LOGO = """ _____ _ _ _ ____     _____
                                        |___|\n"""
 DEFAULT_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "default.conf")
 
-def get_password_strength(password) -> int:
+def get_password_strength(password: str) -> int:
+    """
+    Function to get a password strength from 0 (bad) to 100% (good)
+    :param password: The password to check
+    """
+    
     strength = (len(password) * 62.5) / 16
+    
     if strength > 70:
         strength = 70
+        
     if re.search(r'[A-Z]', password):
         strength += 12.5
     if re.search(r'[a-z]', password):
-        strength += 12.5
+        strength += 12.5   
     if re.search(r'[!@#$%^&*()_+{}\[\]:;<>,.?~\\]', password):
         strength += 12.5
+        
     if strength > 100:
         strength = 100
+        
     return round(strength)
 
 class SymmetricCrypto:
@@ -109,11 +118,13 @@ else:
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(LOGO)
+        
         password_file = input("Path to the password file or Enter to create a new one: ")
         if password_file == "":
             while True:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print(LOGO)
+                
                 print("Path to the password file or Enter to create a new one: \n")
                 password_file_name = input("What should the password file be called: ")
                 if re.search(r'[^a-zA-Z]', password_file_name):
@@ -123,11 +134,13 @@ else:
                         password_file_name = "passwords"
                     break
                 input("Enter: ")
+            
             i = 0
             password_file = os.path.join(os.getcwd(), password_file_name + ("" if i == 0 else str(i)) + ".pwd")
             while os.path.isfile(password_file):
                 i += 1
                 password_file = os.path.join(os.getcwd(), password_file_name + ("" if i == 0 else str(i)) + ".pwd")
+                
             break
         elif os.path.isfile(password_file):
             break
@@ -146,6 +159,7 @@ passwords = []
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     print(LOGO)
+    
     if os.path.isfile(password_file):
         master_password = getpass("Please enter the master password of the file: ")
         try:
@@ -179,9 +193,15 @@ while True:
                 break
     input("\nEnter: ")
 
-def save_passwords():
+def save_passwords() -> None:
+    """
+    Stores the passwords encrypted
+    """
+    
     raw_passwords = json.dumps(passwords)
+    
     encrypted_passwords = SymmetricCrypto(master_password).encrypt(raw_passwords)
+    
     with open(password_file, "w") as file:
         file.write(encrypted_passwords)
 
@@ -190,16 +210,20 @@ start_index = 0
 while True:
     os.system('cls' if os.name == 'nt' else 'clear')
     print(LOGO)
+    
     print("Passwords:")
     for index, password in enumerate(passwords[start_index:start_index+15], start = start_index + 1):
         print(f"  {index}. {password['password']}" + (" - " + password["website"] if not password["website"] is None else ""))
+    
     if len(passwords) == 0:
         print("No passwords yet.")
+        
     print(" ")
     option = input('Enter to view more passwords, Numbers to view passwords in detail, or "add" to add a new password: ')
     if option.lower() in ["q", "quit"]:
         os.system('cls' if os.name == 'nt' else 'clear')
         print(LOGO)
+        
         print("Saving Passwords...")
         save_passwords()
         break
@@ -211,6 +235,7 @@ while True:
     elif option == "add":
         os.system('cls' if os.name == 'nt' else 'clear')
         print(LOGO)
+        
         print("- New Password -")
         new_password = getpass("Enter password: ")
         if not new_password == "":
@@ -242,6 +267,7 @@ while True:
             else:
                 os.system('cls' if os.name == 'nt' else 'clear')
                 print(LOGO)
+                
                 print(f"Password: {password['password']}")
                 if not password['username'] is None:
                     print(f"Username: {password['username']}")
@@ -251,13 +277,17 @@ while True:
                     print(f"Website: {password['website']}")
                 if not password['description'] is None:
                     print(f"Description: {password['description']}")
+                    
                 password_strength = get_password_strength(password['password'])
+                
                 color = "\033[32m"
                 if password_strength < 85:
                     color = "\033[33m"
                 if password_strength < 60:
                     color = "\033[31m"
+                    
                 print(f"{color}Password Strength: {password_strength}/100\033[0m")
+                
                 option2  = input("\nDelete or Enter: ")
                 if option2.lower() in ["d", "delete", "del"]:
                     passwords.pop(index)
