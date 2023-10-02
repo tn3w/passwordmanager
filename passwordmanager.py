@@ -149,7 +149,7 @@ else:
         input("\nEnter: ")
 
     set_default_file = input("\nDo you want to set this file as default? [Y or Enter] ")
-    if set_default_file == "Y":
+    if set_default_file.lower() in ["y", "yes"]:
         with open(DEFAULT_PATH, "w") as file:
             file.write(password_file)
 
