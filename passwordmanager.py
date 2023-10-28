@@ -113,7 +113,7 @@ class SymmetricCrypto:
 # Get the correct password file.
 if os.path.isfile(DEFAULT_PATH):
     with open(DEFAULT_PATH, "r") as file:
-        password_file = file.read()
+        password_file = file.read().strip()
 else:
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
